@@ -27,9 +27,9 @@ client.on('message', (message) => {
     }
 });
 
-cron.schedule('*/5 * * * * *', fetch);
-
-cron.schedule('*/10 * * * * *', post);
+cron.schedule('0 0 0 * * *', fetch);
+cron.schedule('* */30 * * * *', post);
 
 client.login(DISCORD_TOKEN);
+
 app.listen(3000);

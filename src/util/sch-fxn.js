@@ -1,11 +1,11 @@
 const reddit = require('../util/reddit');
 
 const fetch = () => {
-    console.log(`what's up`);
+    console.log(`fetch fxn`);
 };
 
 const post = () => {
-    console.log(`what's up 2`);
+    console.log(`post fxn`);
 };
 
 module.exports = { post, fetch };
