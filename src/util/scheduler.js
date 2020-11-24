@@ -1,11 +1,11 @@
-const reddit    = require('./reddit');
-const cron      = require('node-cron'); 
+const reddit                        = require('./reddit');
+const cron                          = require('node-cron');
+const { firebase, getSubscribers }  = require('../util/firebase');
 
 class Scheduler {
     #cron
     #postQueue
     #discordClient
-    static #subscribers = [];
 
     constructor (discordClient) {
         this.#cron = cron;
@@ -34,38 +34,43 @@ class Scheduler {
 
     // send a sweet message to all the sweet boy subscribers
     #post = async () => {
-        let post = this.#postQueue.splice(0, 1);
+        const sendPromises = [];
+        const post = this.#postQueue.splice(0, 1);
+        // return if postQueue is empty
         if (post.length === 0) return;
-        Scheduler.#subscribers.forEach(async (val, index) => {
-            try {
+        try {
+            // get subscribers then send message for each subscriber
+            const subscribers = await getSubscribers();
+            subscribers.forEach((val, index) => {
                 const { url, title, id } = post[0].data;
                 const reddit_url = `(https://redd.it/${id})`;
-                const message = await this.#discordClient.channels.cache.get(val.toString()).send(`${title} ${reddit_url}\n${url}`);
-                console.log(`${message.content} was sent to channel id ${val}`);
-            } catch (error) {
-                console.error(error);
-            }
-        });
+                sendPromises.push(this.#discordClient.channels.cache.get(val.toString()).send(`${title} ${reddit_url}\n${url}`));
+            });
+            const response = await Promise.all(sendPromises);
+            response.forEach((val, index) => {
+                console.log(`${val.content} was sent to channel id ${val.channel.id}`);
+            });
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     // add channel id to subscribers list
-    static subscribe = (channelId) => {
-        // change code to support data persistence
-        this.#subscribers.push(channelId);
-        this.#subscribers = [...new Set(this.#subscribers)];
-    }
-
-    // remove channel id from subscribers list
-    static unsubscribe = (channelId) => {
-        // change code to support data persistence
-        const index = this.#subscribers.indexOf(channelId);
-        if (index > -1) {
-            this.#subscribers.splice(index, 1);
+    static subscribe = async (channelId) => {
+        try {
+            await firebase.database().ref(`subscribers/${channelId}`).set({ channelId });
+        } catch (error) {
+            console.error(error);
         }
     }
 
-    static getSubscribers = () => {
-        return this.#subscribers;
+    // remove channel id from subscribers list
+    static unsubscribe = async (channelId) => {
+        try {
+            await firebase.database().ref(`subscribers/${channelId}`).remove();
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     // start scheduled fetching and posting
