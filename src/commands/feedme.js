@@ -26,7 +26,9 @@ module.exports = {
             console.log(message.content);
 
         } catch (err) {
-            console.error(err);
+            console.error(`Error: ${err.message}`);
+            const message = await msg.channel.send(`Ho sang did not find any results for '${args.join(' ')}'`);
+            console.log(message.content);
         }
     },
 }
