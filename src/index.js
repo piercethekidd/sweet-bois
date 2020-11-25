@@ -11,7 +11,6 @@ const express                               = require('express');
 const app = new express();
 const client = new Client();
 const scheduler = new Scheduler(client);
-const port = 3000;
 
 client.on('ready', () => {
     console.log(`${client.user.tag} has logged in.`);
@@ -37,6 +36,7 @@ app.get('/', (req, res) => {
     res.json({data: "PING"});
 });
 
+let port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`App listening to port ${port}`)
 });
