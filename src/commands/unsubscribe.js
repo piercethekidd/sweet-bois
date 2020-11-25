@@ -1,7 +1,7 @@
 const { Scheduler } =  require('../util/scheduler');
 
 module.exports = {
-    description: 'Subscribes the current channel for some sweet boy content',
+    description: 'Unsubscribes the channel from some sweet boy content',
     execute: (args, msg) => {
         Scheduler.unsubscribe(msg.channel.id);
         let message = 'Unsubscribed';
