@@ -11,6 +11,7 @@ const express                               = require('express');
 const app = new express();
 const client = new Client();
 const scheduler = new Scheduler(client);
+const port = 3000;
 
 client.on('ready', () => {
     console.log(`${client.user.tag} has logged in.`);
@@ -30,4 +31,12 @@ client.on('message', (message) => {
 scheduler.initializeScheduler();
 client.login(DISCORD_TOKEN);
 
-app.listen(3000);
+// use this route to ping the application
+app.get('/', (req, res) => {
+    console.log(`${req.ip} requested for a PING`);
+    res.json({data: "PING"});
+});
+
+app.listen(port, () => {
+    console.log(`App listening to port ${port}`)
+});
