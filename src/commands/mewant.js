@@ -1,5 +1,6 @@
-const reddit    = require('../util/reddit');
-const _         = require('lodash');
+const reddit        = require('../util/reddit');
+const _             = require('lodash');
+const { firebase }  = require('../util/firebase');
 
 module.exports = {
     description: 'Me want cookie',
@@ -17,31 +18,24 @@ module.exports = {
                 }
             });
 
-            let res;
-            // enable general search
-            if (isGeneralSearch) {
-                res = await reddit.get(`/search`, {
-                    limit: 10,
-                    count: 10,
-                    show: 'all',
-                    sort: 'top',
-                    q: args.join(' '),
-                });
-            }
-
-            // enable subreddit search
-            else {
+            let route, q;
+            // enable general search or specific search
+            if (!isGeneralSearch) {
                 const [subreddit] = args.splice(0, 1);
-                res = await reddit.get(`/r/${subreddit}/search/`, {
-                    limit: 10,
-                    show: 'all',
-                    sort: 'top',
-                    q: args.join(' '),
-                    restrict_sr: true,
-                });
-            }
+                route = `/r/${subreddit}/search/`;
+            } else route = `/search/`;
+            
+            q = args.join(' ');
+            const res = await reddit.get(route, {
+                limit: 10,
+                show: 'all',
+                sort: 'top',
+                restrict_sr: true,
+                q,
+            });
 
             // extract necessary info from resulting array
+            const { before, after } = res.data;
             let posts = res.data.children;
             if (posts.length === 0) throw new Error(`Ho sang did not find any results for '${args.join(' ')}'`);
             posts = _.map(posts, (post) => {
@@ -59,11 +53,18 @@ module.exports = {
             // send results
             const message = await msg.channel.send(msgcontent);
             await Promise.all([
-                await message.react('⏫'),
-                await message.react('⬆️'),
-                await message.react('⬇️'),
-                await message.react('⏬'),
+                message.react('⬆️'),
+                message.react('⬇️'),
             ]);
+
+            // save search and reply info from user
+            await firebase.database().ref(`users/${msg.author.id}/search/${message.id}`).set({
+                route,
+                q,
+                before,
+                after,
+                count: posts.length,
+            });
             console.log(message.content);
 
         } catch (err) {
