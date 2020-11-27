@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const { DISCORD_TOKEN }                     = process.env;
 const { parse_message, execute_command }    = require('./util/helper');
+const { searchReddit }                      = require('./util/search');
 const { Scheduler }                         = require('./util/scheduler');
 const { Client }                            = require('discord.js');
 const express                               = require('express');
@@ -24,6 +25,13 @@ client.on('message', (message) => {
         console.log(`[${message.author.tag}]: ${message.content}`);
         console.log(`[${message.author.tag}] requested for the ${command} command.`);
         execute_command(command, args, message);
+    }
+});
+
+client.on('messageReactionAdd', (reaction, user) => {
+    if(reaction.message.author.tag === 'SweetBot#3263' &&
+        (reaction.emoji.name === '⬆️' || reaction.emoji.name === '⬇️') && user.tag !== 'SweetBot#3263') {
+        searchReddit(reaction, user);
     }
 });
 
