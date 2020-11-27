@@ -5,29 +5,28 @@ module.exports = {
     execute: async (args, msg) => {
         try {
             // throw error if args are missing
-            if (args.length === 0) {
-                const err_message = `Missing required arguments`;
-                await msg.channel.send(err_message);
-                throw err_message;
-            }
+            if (args.length === 0) throw new Error(`Missing required arguments`);
 
-            // search for results
+            // search for results then get random post
             const search_args = args.join('+');
             const res = await reddit.get(`/r/${search_args}/hot`, {
                 limit: Math.floor(Math.random() * 100),
                 show: 'all',
             });
 
+            // throw error if results not found 
+            const post = res.data.children[res.data.children.length-1];
+            if (post === undefined) throw new Error (`Ho sang did not find any results for '${args.join(' ')}'`);
+
             // send to discord
-            const { data } = res.data.children[res.data.children.length-1];
-            const { url, title, id } = data;
+            const { url, title, id } = post.data;
             const reddit_url = `(https://redd.it/${id})`;
             const message = await msg.channel.send(`${title} ${reddit_url}\n${url}`);
             console.log(message.content);
 
         } catch (err) {
             console.error(`Error: ${err.message}`);
-            const message = await msg.channel.send(`Ho sang did not find any results for '${args.join(' ')}'`);
+            const message = await msg.channel.send(err.message);
             console.log(message.content);
         }
     },
