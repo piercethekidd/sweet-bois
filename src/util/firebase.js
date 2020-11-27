@@ -25,7 +25,14 @@ const getSubscribers = async () => {
     }
 }
 
+// get search details from database
+const getSearchDetails = async (userId, messageId) => {
+    const snapshot = await app.database().ref(`/users/${userId}/search/${messageId}`).once('value');
+    return snapshot.val();
+}
+
 module.exports = {
     firebase: app,
-    getSubscribers
+    getSubscribers,
+    getSearchDetails,
 };
