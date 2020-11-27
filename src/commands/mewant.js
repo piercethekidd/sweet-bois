@@ -6,11 +6,7 @@ module.exports = {
     execute: async (args, msg) => {
         try {
             // throw error if args are missing
-            if (args.length < 2) {
-                const err_message = `Missing required arguments`;
-                await msg.channel.send(err_message);
-                return;
-            }
+            if (args.length < 2) throw new Error(`Missing required arguments`);
 
             // check for --general flag
             let isGeneralSearch = false;
@@ -26,6 +22,7 @@ module.exports = {
             if (isGeneralSearch) {
                 res = await reddit.get(`/search`, {
                     limit: 10,
+                    count: 10,
                     show: 'all',
                     sort: 'top',
                     q: args.join(' '),
@@ -46,7 +43,7 @@ module.exports = {
 
             // extract necessary info from resulting array
             let posts = res.data.children;
-            if (posts.length === 0) throw 'Did not find any results';
+            if (posts.length === 0) throw new Error(`Ho sang did not find any results for '${args.join(' ')}'`);
             posts = _.map(posts, (post) => {
                 const { title, id, url, subreddit} = post.data;
                 return { id, title, url, subreddit };
@@ -61,11 +58,17 @@ module.exports = {
 
             // send results
             const message = await msg.channel.send(msgcontent);
+            await Promise.all([
+                await message.react('⏫'),
+                await message.react('⬆️'),
+                await message.react('⬇️'),
+                await message.react('⏬'),
+            ]);
             console.log(message.content);
 
         } catch (err) {
             console.error(`Error: ${err.message}`);
-            const message = await msg.channel.send(`Ho sang did not find any results for '${args.join(' ')}'`);
+            const message = await msg.channel.send(err.message);
             console.log(message.content);
         }
     },
