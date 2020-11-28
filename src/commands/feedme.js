@@ -1,7 +1,9 @@
-const reddit = require('../util/reddit');
+const reddit        = require('../util/reddit');
+const { PREFIX }    = process.env;
 
 module.exports = {
     description: 'Feed your thirsty ass bitch',
+    help: `${PREFIX}feedme <subreddit> [...more subreddits] to get a random post from the specified subreddits`,
     execute: async (args, msg) => {
         try {
             // throw error if args are missing
