@@ -38,10 +38,11 @@ client.on('messageReactionAdd', (reaction, user) => {
 scheduler.initializeScheduler();
 client.login(DISCORD_TOKEN);
 
+const version = '1.0.0';
 // use this route to ping the application
 app.get('/', (req, res) => {
     console.log(`${req.ip} requested for a PING`);
-    res.json({data: "PING"});
+    res.json({ version });
 });
 
 let port = process.env.PORT || 3000;
