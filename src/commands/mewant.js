@@ -1,9 +1,16 @@
 const reddit        = require('../util/reddit');
 const _             = require('lodash');
 const { firebase }  = require('../util/firebase');
+const { PREFIX }    = process.env;
 
 module.exports = {
     description: 'Me want cookie',
+    help: `${PREFIX}mewant <search_terms> [-g, -t, -n, -r, -h] to search in reddit\n`+
+            '-g general search\n' +
+            '-t sort by top\n' +
+            '-n sort by new\n' +
+            '-r sort by relevance\n' +
+            '-h sort by hot\n',
     execute: async (args, msg) => {
         try {
             // throw error if args are missing

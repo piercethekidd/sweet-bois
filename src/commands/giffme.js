@@ -1,8 +1,10 @@
-const reddit = require('../util/reddit');
-const _      = require('lodash');
+const reddit        = require('../util/reddit');
+const _             = require('lodash');
+const { PREFIX }    = process.env;
 
 module.exports = {
-    description: 'Preview post/s',
+    description: 'View entries from reddit',
+    help: `${PREFIX}giffme <id> [...ids] to view subreddit post/s`,
     execute: async (args, msg) => {
         try {
             // throw error if args are missing
