@@ -11,7 +11,6 @@ const searchReddit = async (reaction, user) => {
         // add attributes to details object
         details.limit = 10;
         details.show = 'all';
-        details.sort = 'top';
         details.restrict_sr = true;
 
         // add next or prev options to details object
@@ -59,6 +58,7 @@ const searchReddit = async (reaction, user) => {
         await firebase.database().ref(`users/${user.id}/search/${reaction.message.id}`).set({
             route: details.route,
             q: details.q,
+            sort: details.sort,
             before: before || null,
             after: after || null,
             count: count,
