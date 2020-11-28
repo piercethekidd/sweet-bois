@@ -8,11 +8,7 @@ module.exports = {
     execute: async (args, msg) => {
         try {
             // throw error if args are missing
-            if (args.length === 0) {
-                const err_message = `Missing required arguments`;
-                await msg.channel.send(err_message);
-                throw err_message;
-            }
+            if (args.length === 0) throw new Error(`Missing required arguments`);
 
             // format to fullname, then get posts from api
             let id = _.map(args, arg => `t3_${arg}`);
