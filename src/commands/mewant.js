@@ -9,27 +9,34 @@ module.exports = {
             // throw error if args are missing
             if (args.length < 2) throw new Error(`Missing required arguments`);
 
-            // check for --general flag
-            let isGeneralSearch = false;
-            args.forEach((arg, index) => {
-                if (arg === '--general' || arg === '--g') {
+            // check for search options, then push searchArg to new array
+            let isGeneralSearch = false, sort = 'top', searchArgs = [];
+            args.forEach(arg => {
+                if (arg === '-general' || arg === '-g') 
                     isGeneralSearch = true;
-                    args.splice(index, 1);
-                }
+                else if (arg === '-top' || arg === '-t')
+                    sort = 'top';
+                else if (arg === '-relevance' || arg === '-r')
+                    sort = 'relevance';
+                else if (arg === '-hot' || arg === '-h')
+                    sort = 'hot';
+                else if (arg === '-new' || arg === '-n')
+                    sort = 'new';
+                else searchArgs.push(arg);
             });
 
             let route, q;
             // enable general search or specific search
             if (!isGeneralSearch) {
-                const [subreddit] = args.splice(0, 1);
+                const [subreddit] = searchArgs.splice(0, 1);
                 route = `/r/${subreddit}/search/`;
             } else route = `/search/`;
             
-            q = args.join(' ');
+            q = searchArgs.join(' ');
             const res = await reddit.get(route, {
                 limit: 10,
                 show: 'all',
-                sort: 'top',
+                sort,
                 restrict_sr: true,
                 q,
             });
@@ -63,6 +70,7 @@ module.exports = {
                 q,
                 before,
                 after,
+                sort,
                 count: posts.length,
             });
             console.log(message.content);
