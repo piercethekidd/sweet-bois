@@ -75,7 +75,7 @@ class Scheduler {
 
     // start scheduled fetching and posting
     initializeScheduler = () => {
-        this.#cron.schedule('0 0 20 * * *', this.#fetch); // fetch data every 4 AM Philippine Time
+        this.#cron.schedule('0 0 16 * * *', this.#fetch); // fetch data every 12 AM Philippine Time
         this.#cron.schedule('30 */30 * * * *', this.#post); // post every 30 minutes 
     }
 
