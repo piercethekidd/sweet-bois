@@ -25,6 +25,18 @@ const getSubscribers = async () => {
     }
 }
 
+// get twitter subscribers from database
+const getTwitterSubscribers = async () => {
+    try {
+        const snapshot = await app.database().ref('twitter/subscribers').once('value'); 
+        const subscibers = _.keys(snapshot.val());
+        return subscibers;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
 // get search details from database
 const getSearchDetails = async (userId, messageId) => {
     const snapshot = await app.database().ref(`/users/${userId}/search/${messageId}`).once('value');
@@ -34,5 +46,6 @@ const getSearchDetails = async (userId, messageId) => {
 module.exports = {
     firebase: app,
     getSubscribers,
+    getTwitterSubscribers,
     getSearchDetails,
 };
