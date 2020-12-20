@@ -33,7 +33,8 @@
     "helmet": "^4.2.0",
     "lodash": "^4.17.20",
     "node-cron": "^2.0.3",
-    "reddit": "^1.2.1"
+    "reddit": "^1.2.1",
+    "twitter": "^1.7.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"
