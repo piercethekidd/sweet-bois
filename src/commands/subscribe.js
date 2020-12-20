@@ -2,6 +2,7 @@ const { Scheduler } =  require('../util/scheduler');
 const { PREFIX }    = process.env;
 
 module.exports = {
+    show: true,
     description: 'Subscribes the channel for some sweet boy content',
     help: `${PREFIX}subscribe to subscribe to daily sweet boy updates`,
     execute: (args, msg) => {

@@ -2,6 +2,7 @@ const _             = require('lodash');
 const { PREFIX }    = process.env;
 
 module.exports = {
+    show: true,
     description: 'List commands and their description',
     help: `${PREFIX}help <command> to display information on how to use the command`,
     execute: async (args, msg, commands) => {
@@ -12,7 +13,8 @@ module.exports = {
                 message = '```fix\nList of commands:\n-----------------';
                 // List command descriptions from the description attribute
                 _.forOwn(commands, (val, key) => {
-                    message += `\n_${key} - ${val.description}`
+                    if (!val.show) return;
+                    message += `\n_${key} - ${val.description}`;
                 });
                 message += `\n\n${PREFIX}help <command> to display information on how to use the command`;
                 message += '```';

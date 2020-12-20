@@ -3,6 +3,7 @@ const _             = require('lodash');
 const { PREFIX }    = process.env;
 
 module.exports = {
+    show: true,
     description: 'View entries from reddit',
     help: `${PREFIX}giffme <id> [...ids] to view subreddit post/s`,
     execute: async (args, msg) => {
