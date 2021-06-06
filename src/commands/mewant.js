@@ -4,7 +4,7 @@ const { firebase }  = require('../util/firebase');
 const { PREFIX }    = process.env;
 
 module.exports = {
-    description: 'Me want cookie',
+    description: 'Do a general search or search in a specific subreddit',
     help: `${PREFIX}mewant <search_terms> [-g, -t, -n, -r, -h] to search in reddit\n`+
             '-g general search\n' +
             '-t sort by top\n' +

@@ -2,7 +2,7 @@ const reddit        = require('../util/reddit');
 const { PREFIX }    = process.env;
 
 module.exports = {
-    description: 'Feed your thirsty ass bitch',
+    description: 'Get a random post from the given subreddit',
     help: `${PREFIX}feedme <subreddit> [...more subreddits] to get a random post from the specified subreddits`,
     execute: async (args, msg) => {
         try {
