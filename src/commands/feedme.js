@@ -12,7 +12,7 @@ module.exports = {
             // search for results then get random post
             const search_args = args.join('+');
             const res = await reddit.get(`/r/${search_args}/hot`, {
-                limit: Math.floor(Math.random() * 100),
+                limit: Math.floor(Math.random() * 30),
                 show: 'all',
             });
 
