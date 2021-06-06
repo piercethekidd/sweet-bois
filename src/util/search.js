@@ -34,7 +34,8 @@ const searchReddit = async (reaction, user) => {
 
         // determine count number of fetched items so far
         let count = (reaction.emoji.name === '⬆️')? details.count-posts.length : details.count+posts.length;
-        count = (count <= 0)? 0: count;
+        count = (count < 10)? 10: count;
+        console.log(count);
 
         // format result message
         let msgcontent = '```fix\nSearch Results:\n---------------\n';
