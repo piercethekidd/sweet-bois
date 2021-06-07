@@ -5,8 +5,9 @@ const { PREFIX }    = process.env;
 
 module.exports = {
     description: 'Do a general search or search in a specific subreddit',
-    help: `${PREFIX}mewant <search_terms> [-g, -t, -n, -r, -h] to search in reddit\n`+
-            '-g general search\n' +
+    help: `\nFor general search: ${PREFIX}search <search_terms> -g [-t, -n, -r, -h]\n`+
+            `For a specific search: ${PREFIX}search <subreddit> <search_terms> [-t, -n, -r, -h]\n`+
+            '\n-g general search\n' +
             '-t sort by top\n' +
             '-n sort by new\n' +
             '-r sort by relevance\n' +

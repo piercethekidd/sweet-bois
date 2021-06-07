@@ -2,8 +2,8 @@ const { Scheduler } =  require('../util/scheduler');
 const { PREFIX }    = process.env;
 
 module.exports = {
-    description: 'Unsubscribes the channel from some sweet boy content',
-    help: `${PREFIX}unsubscribe to unsubscribe from daily sweet boy updates`,
+    description: 'Unsubscribes the channel from some daily sweet bot content',
+    help: `\n${PREFIX}unsubscribe`,
     execute: (args, msg) => {
         Scheduler.unsubscribe(msg.channel.id);
         let message = 'Unsubscribed';

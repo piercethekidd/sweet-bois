@@ -3,7 +3,7 @@ const { PREFIX }    = process.env;
 
 module.exports = {
     description: 'List commands and their description',
-    help: `${PREFIX}help <command> to display information on how to use the command`,
+    help: `\n${PREFIX}help <command>`,
     execute: async (args, msg, commands) => {
         try {
             let message ;
@@ -21,7 +21,7 @@ module.exports = {
             else {
                 const command = args.splice(0,1);
                 if (commands[command] === undefined) return;
-                message = '```fix\n' + command + '\n\n'  + commands[command].help + '```';
+                message = '```fix\n' + command + '\n\t-' + commands[command].description + '\n\nUsage:\n'  + commands[command].help + '```';
             }
             
             const serverMsg = await msg.channel.send(message);

@@ -2,8 +2,8 @@ const { Scheduler } =  require('../util/scheduler');
 const { PREFIX }    = process.env;
 
 module.exports = {
-    description: 'Subscribes the channel for some sweet boy content',
-    help: `${PREFIX}subscribe to subscribe to daily sweet boy updates`,
+    description: 'Subscribes the channel for some daily sweet bot content',
+    help: `\n${PREFIX}subscribe`,
     execute: (args, msg) => {
         Scheduler.subscribe(msg.channel.id);
         let message = 'Subscribed';

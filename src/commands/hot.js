@@ -1,23 +1,19 @@
 const reddit        = require('../util/reddit');
-const _             = require('lodash');
-const { firebase }  = require('../util/firebase');
 const { PREFIX }    = process.env;
 
 module.exports = {
-    description: 'Get a random post from the given search terms',
-    help: `${PREFIX}whereis <search_terms>`,
-            
+    description: `Get a random 'hot' post from the given subreddit/s`,
+    help: `\n${PREFIX}hot <subreddit> [...more subreddits]`,
     execute: async (args, msg) => {
         try {
-            // initialize values for search options
-            let sort = 'top', route = `/search/`, q = args.join(' ');
+            // throw error if args are missing
+            if (args.length === 0) throw new Error(`Missing required arguments`);
 
-            const res = await reddit.get(route, {
-                limit: Math.floor(Math.random() * 100),
+            // search for results then get random post
+            const search_args = args.join('+');
+            const res = await reddit.get(`/r/${search_args}/hot`, {
+                limit: Math.floor(Math.random() * 20),
                 show: 'all',
-                sort,
-                restrict_sr: true,
-                q,
             });
 
             // throw error if results not found 
@@ -29,6 +25,7 @@ module.exports = {
             const reddit_url = `(https://redd.it/${id})`;
             const message = await msg.channel.send(`${title} ${reddit_url}\n${url}`);
             console.log(message.content);
+
         } catch (err) {
             console.error(`Error: ${err.message}`);
             const message = await msg.channel.send(err.message);
