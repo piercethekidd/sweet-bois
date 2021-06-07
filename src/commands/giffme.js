@@ -3,34 +3,55 @@ const _             = require('lodash');
 const { PREFIX }    = process.env;
 
 module.exports = {
-    description: 'View entries from reddit',
-    help: `${PREFIX}giffme <id> [...ids] to view subreddit post/s`,
+    description: 'Get a random post from the given search terms',
+    help: `\n${PREFIX}giffme <search_terms> [-s, -m, -l]\n`+
+                '-s [-small] to randomize between 10 posts\n'+
+                '-m [-medium] to randomize between 40 posts\n'+
+                '-l [-large] to randomize between 100 posts\n'+
+                '\nIf no flags are indicated, default is to randomize between 25 posts.\n',
+            
     execute: async (args, msg) => {
         try {
             // throw error if args are missing
             if (args.length === 0) throw new Error(`Missing required arguments`);
+            
+            // initialize values for search options
+            let sort = 'top', route = `/search/`, q;
+            let limit, max = 25;
+            let searchArgs = [];
 
-            // format to fullname, then get posts from api
-            let id = _.map(args, arg => `t3_${arg}`);
-            id = id.join(', ');
-            const res = await reddit.get(`/api/info`, {id});
-
-            // return error if it returns no results
-            const posts = res.data.children;
-            if(posts.length === 0) throw new Error(`Ho sang did not find any posts for '${args.join(' ')}'`);
-
-            // send results to discord
-            let msgPromise = [];
-            posts.forEach(post => {
-                const { url, title, id } = post.data;
-                const reddit_url = `(https://redd.it/${id})`;
-                msgPromise.push(msg.channel.send(`${title} ${reddit_url}\n${url}`));
-            });
-            const messages = await Promise.all(msgPromise);
-            messages.forEach(message => {
-                console.log(message.content);
+            // flags for deciding limit size
+            args.forEach(arg => {
+                if (arg === '-small' || arg === '-s') 
+                    max = 10;
+                else if (arg === '-medium' || arg === '-m')
+                    max = 40;
+                else if (arg === '-large' || arg === '-l')
+                    max = 100;
+                else searchArgs.push(arg);
             });
 
+            // get limit and q
+            limit = Math.floor(Math.random() * max);
+            q = searchArgs.join(' ');
+
+            const res = await reddit.get(route, {
+                limit,
+                show: 'all',
+                sort,
+                restrict_sr: true,
+                q,
+            });
+
+            // throw error if results not found 
+            const post = res.data.children[res.data.children.length-1];
+            if (post === undefined) throw new Error (`Ho sang did not find any results for '${args.join(' ')}'`);
+
+            // send to discord
+            const { url, title, id } = post.data;
+            const reddit_url = `(https://redd.it/${id})`;
+            const message = await msg.channel.send(`${title} ${reddit_url}\n${url}`);
+            console.log(message.content);
         } catch (err) {
             console.error(`Error: ${err.message}`);
             const message = await msg.channel.send(err.message);
